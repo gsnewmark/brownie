@@ -1,4 +1,6 @@
 * brownie
+[[https://api.travis-ci.org/gsnewmark/brownie.png][Build status]]
+
 FIXME: description
 ** License
 Copyright © 2013 Ivan Kryvoruchko
