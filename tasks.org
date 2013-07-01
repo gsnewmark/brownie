@@ -2,4 +2,4 @@
 ** file
 - [ ] call arbitrary function on found files
 - [ ] collect random files to 'fill' the specified size (i. e., music player)
-- [ ] write tests
+- [X] write tests

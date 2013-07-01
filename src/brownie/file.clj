@@ -4,7 +4,7 @@
 (defn find-by-regexp
   "Finds all files name of which mathes given regexp (at least one from the
   list) in directory subtree that starts at given root."
-  [root f & regexps]
+  [root & regexps]
   ;; TODO work with relative paths (for instance, "~/some_dir")
   (letfn [(needed-file? [s] (some #(re-seq % s) regexps))
           (find-files
