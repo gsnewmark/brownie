@@ -1,6 +1,6 @@
 (ns brownie.file-test
   (:require [clojure.test :refer :all]
-            [brownie.file :refer :all]
+            [brownie.tools.file :refer :all]
             [me.raynes.fs :as fs]))
 
 (defn create-test-dirs-files []
@@ -21,6 +21,8 @@
     root))
 
 (def root (create-test-dirs-files))
+
+;;; TODO remove hard-coded numbers
 
 (deftest find-by-regexp-test
   (testing "Find file by part of name."
@@ -60,3 +62,13 @@
     (is (= 6 (count (find-by-extension root "pdf")))))
   (testing "Try to find files that don't exist."
     (is (= 0 (count (find-by-extension "odt"))))))
+
+(deftest paths->files-test
+  (testing "Convert files paths to File instances."
+    (is (every? (partial instance? java.io.File)
+                (paths->files (find-by-regexp root #".*"))))))
+
+(deftest total-size-test
+  (testing "More (identical) files means bigger size."
+    (is (> (total-size (paths->files (find-by-extension root "flac" "mp3")))
+           (total-size (paths->files (find-by-extension root "flac")))))))
