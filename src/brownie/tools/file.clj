@@ -20,6 +20,22 @@
   [root & exts]
   (apply find-by-regexp root (map #(re-pattern (str ".+" "\\." %)) exts)))
 
-(defn paths->files [paths] (map fs/file paths))
+(defn paths->files
+  "Creates a list of java.io.File instances from given list of file paths."
+  [paths]
+  (map fs/file paths))
 
-(defn total-size [files] (apply + (map #(.length %) files)))
+(defn total-size
+  "Calculates total size of given list of files."
+  [files]
+  {:pre [(every? (partial instance? java.io.File) files)]}
+  (apply + (map #(.length %) files)))
+
+(defn copy-files
+  "Copies all given files to given destination directory."
+  [dst files]
+  {:pre [(every? (partial instance? java.io.File) files)
+         (or (instance? java.io.File dst) (string? dst))]}
+  (let [dst (fs/file dst)]
+    (doseq [file files]
+      (fs/copy file (fs/file dst (.getName file))))))

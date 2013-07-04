@@ -20,6 +20,8 @@
       (create-doc-file file))
     root))
 
+(defn create-dst-dir [] (fs/temp-dir "brownie-dst"))
+
 (def root (create-test-dirs-files))
 
 ;;; TODO remove hard-coded numbers
@@ -72,3 +74,11 @@
   (testing "More (identical) files means bigger size."
     (is (> (total-size (paths->files (find-by-extension root "flac" "mp3")))
            (total-size (paths->files (find-by-extension root "flac")))))))
+
+(deftest copy-files-test
+  (testing "Copy files from different sources to one destination."
+    (let [dst-dir (create-dst-dir)]
+      (->> (find-by-regexp root #".+")
+           paths->files
+           (copy-files dst-dir))
+      (is (= 30 (count (find-by-regexp dst-dir #".+")))))))
