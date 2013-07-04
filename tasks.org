@@ -1,5 +1,4 @@
 * brownie
 ** file
-- [ ] call arbitrary function on found files
-- [ ] collect random files to 'fill' the specified size (i. e., music player)
+- [X] collect random files to 'fill' the specified size (i. e., music player)
 - [X] write tests
