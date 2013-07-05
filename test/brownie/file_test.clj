@@ -3,13 +3,16 @@
             [brownie.tools.file :refer :all]
             [me.raynes.fs :as fs]))
 
+(defn create-file
+  [root dir name]
+  (spit (fs/file root dir name) "tmp"))
+
 (defn create-test-dirs-files []
   (let [root (fs/temp-dir "brownie-")
         music-dir-name "music"
         docs-dir-name "docs"
-        create-file (fn [dir name] (spit (fs/file root dir name) "tmp"))
-        create-music-file (partial create-file music-dir-name)
-        create-doc-file (partial create-file docs-dir-name)]
+        create-music-file (partial create-file root music-dir-name)
+        create-doc-file (partial create-file root docs-dir-name)]
     (doseq [dir [music-dir-name docs-dir-name]] (fs/mkdir (fs/file root dir)))
     (doseq [file ["1.flac" "2.flac" "3.flac" "a.flac" "b.flac" "c.flac"
                   "1.mp3" "2.mp3" "3.mp3" "a.mp3" "b.mp3" "c.mp3"]]
@@ -18,6 +21,20 @@
                   "1.pdf" "2.pdf" "3.pdf" "a.pdf" "b.pdf" "c.pdf"
                   "1.md" "2.md" "3.md" "a.md" "b.md" "c.md"]]
       (create-doc-file file))
+    root))
+
+(defn create-dir-tree-for-delete []
+  (let [root (fs/temp-dir "brownie-clean")
+        first-dir-name "first"
+        first-dir-child-name "first-child"
+        second-dir-name "second"]
+    (doseq [dir [first-dir-name second-dir-name]]
+      (fs/mkdir (fs/file root dir)))
+    (fs/mkdir (fs/file root first-dir-name first-dir-child-name))
+    (doseq [f ["a" "b" "c"]]
+      (create-file (fs/file root first-dir-name) first-dir-child-name f))
+    (doseq [f ["a" "b" "c"]] (create-file root second-dir-name f))
+    (doseq [f ["a" "b" "c"]] (create-file root first-dir-name f))
     root))
 
 (defn create-dst-dir [] (fs/temp-dir "brownie-dst"))
@@ -82,3 +99,10 @@
            paths->files
            (copy-files dst-dir))
       (is (= 30 (count (find-by-regexp dst-dir #".+")))))))
+
+(deftest clean-dir-test
+  (testing "Delete directory with all subdirectories and files."
+    (let [dir (create-dir-tree-for-delete)]
+      (is (not (empty? (fs/list-dir dir))))
+      (clean-dir dir)
+      (is (empty? (fs/list-dir dir))))))

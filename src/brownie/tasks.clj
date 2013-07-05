@@ -9,6 +9,7 @@
   [dst max-size root & extensions]
   {:pre [(number? max-size) (or (string? root) (instance? java.io.File root))
          (every? string? extensions)]}
+  (f/clean-dir dst)
   (let [max-size (* max-size 1024 1024)]
     (->> (apply f/find-by-extension root extensions)
          f/paths->files

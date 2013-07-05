@@ -39,3 +39,13 @@
   (let [dst (fs/file dst)]
     (doseq [file files]
       (fs/copy file (fs/file dst (.getName file))))))
+
+(defn clean-dir
+  "Removes everything from the given directory (the directory itself is
+  preserved)."
+  [dir]
+  {:pre [(or (instance? java.io.File dir) (string? dir))]}
+  (let [dir (fs/file dir)]
+    (doseq [f (fs/list-dir dir)]
+      (let [f (fs/file dir f)]
+        ((if (fs/directory? f) fs/delete-dir fs/delete) f)))))
