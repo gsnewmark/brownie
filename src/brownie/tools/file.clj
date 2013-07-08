@@ -18,7 +18,7 @@
   "Finds all files with given extensions (specified without the dot) in
   directory subtree that starts at given root. Returns paths to found files."
   [root & exts]
-  (apply find-by-regexp root (map #(re-pattern (str ".+" "\\." %)) exts)))
+  (apply find-by-regexp root (map #(re-pattern (str ".+" "\\." % "$")) exts)))
 
 (defn paths->files
   "Creates a list of java.io.File instances from given list of file paths."
