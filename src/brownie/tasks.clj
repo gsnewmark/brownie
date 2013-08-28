@@ -1,12 +1,13 @@
 (ns brownie.tasks
   (:require [brownie.tools.file :as f]))
 
-(defn gather-files-for-size
+(defn gather-random-files
   "Copies a set of random files from the given root directory (and its
   subdirectories) with given extensions to the given destination
   directory. The total size of gathered files is smaller or equal to the given
-  maximum size (specified in megabytes)."
-  [dst max-size root & extensions]
+  maximum size (specified in megabytes). Destination directory is cleaned
+  before copying new files."
+  [root dst max-size & extensions]
   {:pre [(or (string? root) (instance? java.io.File root))
          (every? string? extensions)]}
   (f/clean-dir dst)
